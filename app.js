@@ -18,8 +18,8 @@ const modelPath = 'assets/door.glb'; // Path to your GLB model
 
 // Original dimensions of your model in METERS.
 // Updated after model load based on actual measurements.
-let ORIGINAL_MODEL_HEIGHT_METERS = 2; // default value, will be updated
-let ORIGINAL_MODEL_WIDTH_METERS = 1;  // default value, will be updated
+let ORIGINAL_MODEL_HEIGHT_METERS = null; // default value, will be updated
+let ORIGINAL_MODEL_WIDTH_METERS = null;  // default value, will be updated
 // --- END OF MODEL CONFIGURATION ---
 
 let originalModelScene;
