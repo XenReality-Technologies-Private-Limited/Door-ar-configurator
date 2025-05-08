@@ -2,12 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Door AR Configurator</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 </head>
 
@@ -22,16 +21,16 @@
             <h2>Enter Dimensions:</h2>
             <div class="input-group">
                 <label for="doorHeightFt">Height:</label>
-                <input type="number" id="doorHeightFt" placeholder="ft" min="0">
+                <input type="number" id="doorHeightFt" placeholder="ft" min="0" />
                 <span>ft</span>
-                <input type="number" id="doorHeightIn" placeholder="in" min="0" max="11">
+                <input type="number" id="doorHeightIn" placeholder="in" min="0" max="11" />
                 <span>in</span>
             </div>
             <div class="input-group">
                 <label for="doorWidthFt">Width:</label>
-                <input type="number" id="doorWidthFt" placeholder="ft" min="0">
+                <input type="number" id="doorWidthFt" placeholder="ft" min="0" />
                 <span>ft</span>
-                <input type="number" id="doorWidthIn" placeholder="in" min="0" max="11">
+                <input type="number" id="doorWidthIn" placeholder="in" min="0" max="11" />
                 <span>in</span>
             </div>
             <button id="submitDimensions" class="submit-button">
@@ -39,14 +38,15 @@
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-box">
                     <path
-                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                    </path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
                 </svg>
                 Generate & View in AR
             </button>
-            <p id="loadingMessage" class="loading-message" style="display: none;">Processing your model...</p>
+            <p id="loadingMessage" class="loading-message" style="display: none;">
+                Processing your model...
+            </p>
             <p id="errorMessage" class="error-message" style="display: none;"></p>
         </div>
 
@@ -61,10 +61,10 @@
                 <div class="ar-prompt" slot="ar-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.61 10.86a3 3 0 0 1-5.22 0"></path>
-                        <path d="M10.86 17.61a3 3 0 0 1 0-5.22"></path>
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+                        <path d="M17.61 10.86a3 3 0 0 1-5.22 0" />
+                        <path d="M10.86 17.61a3 3 0 0 1 0-5.22" />
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
                     View in your space
                 </div>
@@ -73,13 +73,15 @@
     </div>
 
     <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
-        }
-      }
-    </script>
+  {
+    "imports": {
+      "three":
+        "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+      "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
     <script type="module" src="app.js"></script>
 </body>
 
