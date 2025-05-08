@@ -1,0 +1,206 @@
+/* General body styling */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top for longer content */
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Main container for the content */
+.container {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+}
+
+/* Header styling */
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 2em; /* Responsive font size */
+}
+
+header p {
+    color: #555;
+    margin-bottom: 25px;
+    font-size: 1em;
+}
+
+/* Controls section styling */
+.controls {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.controls h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #374151;
+    font-size: 1.4em;
+}
+
+/* Input group styling for dimensions */
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 10px; /* Space between elements */
+}
+
+.input-group label {
+    font-weight: 500;
+    color: #4b5563;
+    min-width: 60px; /* Ensure labels align */
+    text-align: left;
+}
+
+.input-group input[type="number"] {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1em;
+    width: 80px; /* Fixed width for number inputs */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input[type="number"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.input-group span {
+    color: #6b7280;
+    margin-left: -5px; /* Adjust spacing for units */
+    margin-right: 10px;
+}
+
+
+/* Submit button styling */
+.submit-button {
+    background-color: #3b82f6; /* Tailwind blue-500 */
+    color: white;
+    font-weight: 500;
+    font-size: 1em;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: inline-flex; /* For aligning icon and text */
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.submit-button:hover {
+    background-color: #2563eb; /* Darker blue */
+}
+
+.submit-button:active {
+    transform: translateY(1px);
+    background-color: #1d4ed8; /* Even darker blue */
+}
+
+.submit-button svg {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+/* Model viewer container */
+.viewer-container {
+    margin-top: 20px;
+    width: 100%;
+    height: auto; /* Adjust height based on model-viewer */
+}
+
+/* Custom AR button prompt */
+.ar-prompt {
+    background-color: #ffffff;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, color 0.3s;
+}
+.ar-prompt:hover {
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+/* Loading and Error Messages */
+.loading-message, .error-message {
+    margin-top: 15px;
+    font-size: 0.9em;
+    padding: 10px;
+    border-radius: 6px;
+}
+.loading-message {
+    color: #166534; /* Tailwind green-700 */
+    background-color: #f0fdf4; /* Tailwind green-50 */
+}
+.error-message {
+    color: #b91c1c; /* Tailwind red-700 */
+    background-color: #fef2f2; /* Tailwind red-50 */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+    header p {
+        font-size: 0.9em;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .input-group label {
+        margin-bottom: 3px;
+    }
+    .input-group div {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+    .input-group input[type="number"] {
+        width: 70px; /* Slightly smaller for mobile */
+    }
+    .controls h2 {
+        font-size: 1.2em;
+    }
+    .submit-button {
+        width: 100%;
+        justify-content: center;
+    }
+    #doorModelViewer {
+        height: 350px; /* Adjust viewer height for smaller screens */
+    }
+}
