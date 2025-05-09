@@ -21,8 +21,8 @@ const modelPath = 'assets/door.glb'; // Path to your GLB model
 
 // Original dimensions of your model in METERS.
 // These will be updated after the model is loaded based on its bounding box.
-let ORIGINAL_MODEL_HEIGHT_METERS = 1.0; // Default placeholder
-let ORIGINAL_MODEL_WIDTH_METERS = 1.0;  // Default placeholder
+let ORIGINAL_MODEL_HEIGHT_METERS = 1.0; // Default placeholder, will be updated
+let ORIGINAL_MODEL_WIDTH_METERS = 1.0;  // Default placeholder, will be updated
 // --- END OF MODEL CONFIGURATION ---
 
 let originalModelScene;
@@ -31,19 +31,8 @@ const exporter = new GLTFExporter();
 
 // Server endpoint for uploading GLB
 // IMPORTANT: Change this if your server is running on a different host/port
-const UPLOAD_ENDPOINT = 'http://localhost:3000/upload-glb'; // Adjust if needed
+const UPLOAD_ENDPOINT = 'http://10.217.68.49:3000/upload-glb'; // Adjust if needed
 
-
-// Helper function to convert ArrayBuffer to Base64 string (No longer needed for this approach)
-// function arrayBufferToBase64(buffer) {
-//      let binary = '';
-//      const bytes = new Uint8Array(buffer);
-//      const len = bytes.byteLength;
-//      for (let i = 0; i < len; i++) {
-//          binary += String.fromCharCode(bytes[i]);
-//      }
-//      return window.btoa(binary);
-// }
 
 // Function to display error messages
 function showError(message) {
@@ -65,7 +54,7 @@ function showLoading(message) {
 function hideMessages() {
     loadingMessage.style.display = 'none';
     errorMessage.style.display = 'none';
-    submitButton.disabled = false; // Re-enable button when done
+    submitButton.disabled = false; // Re-enable button when done (unless model load failed)
 }
 
 // --- Model Loading and Pre-processing ---
@@ -79,11 +68,11 @@ loader.load(
         // Compute bounding box and pivot
         const box = new THREE.Box3().setFromObject(originalModelScene);
         const size = box.getSize(new THREE.Vector3());
-        //const pivot = new THREE.Vector3(
-            //(box.min.x + box.max.x) / 2, // Center X
-            //box.min.y,                   // Bottom Y
-            //(box.min.z + box.max.z) / 2  // Center Z
-        //);
+        const pivot = new THREE.Vector3(
+            (box.min.x + box.max.x) / 2, // Center X
+            box.min.y,                   // Bottom Y
+            (box.min.z + box.max.z) / 2  // Center Z
+        );
 
         // Store actual dimensions from the loaded model
         ORIGINAL_MODEL_HEIGHT_METERS = size.y;
@@ -93,7 +82,7 @@ loader.load(
 
         // Shift the model's origin to bottom centre by subtracting the pivot.
         // This makes scaling and placing relative to the base.
-        //originalModelScene.position.sub(pivot);
+        originalModelScene.position.sub(pivot);
 
         hideMessages();
         console.log('Base 3D model loaded, pre-processed, and origin shifted to bottom centre.');
@@ -160,7 +149,6 @@ submitButton.addEventListener('click', async () => {
     const scaleY = targetHeightMeters / ORIGINAL_MODEL_HEIGHT_METERS;
     const scaleX = targetWidthMeters / ORIGINAL_MODEL_WIDTH_METERS;
     // Decide how the depth (Z) scales. Often, it scales proportionally to width.
-    // Or you might keep it fixed, or scale proportionally to the largest scale factor.
     // Scaling proportionally to width (scaleX) is a common approach for doors.
     const scaleZ = scaleX; // Depth scales proportionally to width (adjust if needed)
 
@@ -179,73 +167,94 @@ submitButton.addEventListener('click', async () => {
     const scaledBox = new THREE.Box3().setFromObject(scaledModel);
     const scaledSize = scaledBox.getSize(new THREE.Vector3());
     console.log(`Scaled model BBox (m): H=${scaledSize.y.toFixed(3)}, W=${scaledSize.x.toFixed(3)}, D=${scaledSize.z.toFixed(3)}`);
-    // Log the scaled model object before exporting
-    console.log('Scaled model object before export:', scaledModel);
-    console.log('Attempting to export scaled model...');
-    // 4. Export the Scaled Model to GLB and Upload
+
+    // 4. Export the Scaled Model to GLB and Upload using parseAsync
     showLoading('Exporting and uploading model...');
     try {
         const options = { binary: true }; // Export as binary GLB
 
-        exporter.parse(
-            scaledModel,
-            async (glbArrayBuffer) => { // Make this callback async to use await
-                console.log('exporter.parse onSuccess callback triggered.');
-                // --- RE-CHECK THIS LOG ---
-                console.log('Type of data received in onSuccess:', typeof glbArrayBuffer);
-                console.log('Is data an ArrayBuffer?', glbArrayBuffer instanceof ArrayBuffer);
-                console.log('Size of data received in onSuccess:', glbArrayBuffer ? glbArrayBuffer.byteLength : 'undefined or null', 'bytes');
-                // --- END RE-CHECK LOG ---
-                if (!glbArrayBuffer || !(glbArrayBuffer instanceof ArrayBuffer) || glbArrayBuffer.byteLength < 1000) { // Added a more robust check
-                    showError('Export failed: Produced invalid or tiny GLB data.');
-                    console.error('GLB export resulted in unexpected data:', glbArrayBuffer);
-                    return; // Stop here if export data is bad
-                }
-                console.log('GLB ArrayBuffer looks valid. Proceeding with upload...');
+        console.log('Attempting to export scaled model using parseAsync...');
+        // Use parseAsync which returns a Promise that resolves with the ArrayBuffer
+        const glbArrayBuffer = await exporter.parseAsync(scaledModel, options);
 
+        console.log('Model exported successfully using parseAsync.');
+        // --- Check the data received from parseAsync ---
+        console.log('Type of data received from parseAsync:', typeof glbArrayBuffer);
+        console.log('Is data an ArrayBuffer?', glbArrayBuffer instanceof ArrayBuffer);
+         // Check for Node.js Buffer too, though less likely in browser fetch context
+        console.log('Is data a Buffer (Node.js)?', typeof Buffer !== 'undefined' && glbArrayBuffer instanceof Buffer);
+        console.log('Size of data received from parseAsync:', glbArrayBuffer ? (glbArrayBuffer.byteLength || glbArrayBuffer.length) : 'undefined');
+        // Avoid logging the entire buffer content directly to console for large files
+        // console.log('GLB export resulted in data (from parseAsync):', glbArrayBuffer);
+
+
+        // Validate that the result is actually a buffer type
+        if (! (glbArrayBuffer instanceof ArrayBuffer) && !(typeof Buffer !== 'undefined' && glbArrayBuffer instanceof Buffer)) {
+             console.error("parseAsync did not return an ArrayBuffer or Buffer as expected.");
+             showError("Internal error: GLB exporter did not return binary data in expected format.");
+             // Optionally, log the unexpected data for debugging if it's small
+             if (glbArrayBuffer && typeof glbArrayBuffer === 'object') {
+                  console.log('Unexpected data from parseAsync:', glbArrayBuffer);
+             }
+             return; // Stop processing
+        }
+
+         // Add a sanity check for buffer size
+         if (glbArrayBuffer.byteLength < 1024) { // e.g., minimum 1KB, adjust as needed
+              console.warn(`Exported GLB is very small (${glbArrayBuffer.byteLength} bytes). This might indicate an issue with the model or export.`);
+              // Decide if you want to show an error or proceed
+              // showError(`Exported model is too small (${glbArrayBuffer.byteLength} bytes). There might be an issue.`);
+              // return;
+         }
+
+
+        try {
+            // Use fetch to send the ArrayBuffer to your Node.js server
+            const response = await fetch(UPLOAD_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/octet-stream', // Indicate binary data
+                },
+                body: glbArrayBuffer, // Send the raw ArrayBuffer received from parseAsync
+            });
+
+            // --- MODIFIED ERROR HANDLING (keep the robust version) ---
+            if (!response.ok) {
+                let errorDetails = `Upload failed: ${response.status} ${response.statusText}`;
                 try {
-                    // Use fetch to send the ArrayBuffer to your Node.js server
-                    const response = await fetch(UPLOAD_ENDPOINT, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/octet-stream', // Indicate binary data
-                        },
-                        body: glbArrayBuffer, // Send the raw ArrayBuffer
-                    });
-
-                    if (!response.ok) {
-                         const errorData = await response.json();
-                         console.error('Upload failed:', response.status, errorData);
-                         throw new Error(`Upload failed: ${errorData.error || response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    const cloudfrontUrl = result.url; // Get the URL from the server response
-
-                    console.log('Upload successful. Model URL:', cloudfrontUrl);
-
-                    // Set the src of the model-viewer to the received URL
-                    modelViewerElement.src = cloudfrontUrl;
-                    modelViewerElement.style.display = 'block'; // Make model-viewer visible
-                    hideMessages(); // Hide loading message
-
-                } catch (uploadError) {
-                    console.error('Error during upload:', uploadError);
-                    showError(`Failed to upload the model: ${uploadError.message}`);
+                    const errorData = await response.json();
+                    errorDetails = `Upload failed: ${response.status} ${response.statusText} - ${errorData.error || JSON.stringify(errorData)}`;
+                    console.error('Server returned error (JSON):', response.status, errorData);
+                } catch (e) {
+                    // If JSON parsing fails, get the raw text body
+                    const errorBody = await response.text();
+                    errorDetails = `Upload failed: ${response.status} ${response.statusText}. Server response: "${errorBody.substring(0, 200)}..."`; // Log first 200 chars
+                     console.error('Server returned error (non-JSON):', response.status, errorBody);
                 }
-            },
-            (error) => { // Export progress callback (optional)
-                // console.log('Export progress:', error); // Uncomment for debugging progress
-            },
-            (error) => { // Export error callback
-                console.error('Error exporting GLB:', error);
-                showError('Could not export the scaled 3D model.');
-            },
-            options
-        );
-    } catch (error) {
-        console.error('Error during model processing or export initiation:', error);
-        showError('An unexpected error occurred during model processing.');
+                 // Throw a new error with the gathered details
+                throw new Error(errorDetails);
+            }
+            // --- END MODIFIED ERROR HANDLING ---
+
+
+            const result = await response.json(); // This should only run if response.ok is true
+            const cloudfrontUrl = result.url; // Get the URL from the server response
+
+            console.log('Upload successful. Model URL:', cloudfrontUrl);
+
+            // Set the src of the model-viewer to the received URL
+            modelViewerElement.src = cloudfrontUrl;
+            modelViewerElement.style.display = 'block'; // Make model-viewer visible
+            hideMessages(); // Hide loading message
+
+        } catch (uploadError) {
+            console.error('Error during upload or processing server response:', uploadError);
+            showError(`Failed to upload the model: ${uploadError.message}`);
+        }
+
+    } catch (exportError) { // Catch errors from parseAsync
+        console.error('Error during GLB export:', exportError);
+        showError(`Failed to export the 3D model: ${exportError.message}`);
     }
 });
 

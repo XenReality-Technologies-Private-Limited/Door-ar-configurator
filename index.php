@@ -51,11 +51,11 @@
         </div>
 
         <div class="viewer-container">
-            <model-viewer id="doorModelViewer" ar ar-modes="webxr quick-look" ar-scale="fixed" camera-controls
-                camera-orbit="0deg 75deg 6m" min-camera-orbit="auto auto 3m" max-camera-orbit="auto auto 12m"
-                field-of-view="45deg" camera-target="0m 1.5m 0m" bounds="tight" auto-rotate disable-zoom
-                touch-action="pan-y" alt="Scalable Door Model" shadow-intensity="1" exposure="1"
-                environment-image="neutral"
+            <model-viewer id="doorModelViewer" ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed"
+                camera-controls camera-orbit="0deg 75deg 6m" min-camera-orbit="auto auto 3m"
+                max-camera-orbit="auto auto 12m" field-of-view="45deg" camera-target="0m 1.5m 0m" bounds="tight"
+                auto-rotate disable-zoom touch-action="pan-y" alt="Scalable Door Model" shadow-intensity="1"
+                exposure="1" environment-image="neutral"
                 style="width: 100%; height: 500px; border-radius: 12px; background-color: #f0f0f0;"
                 poster="https://placehold.co/600x400/e2e8f0/94a3b8?text=Your+3D+Door+Will+Appear+Here">
                 <div class="ar-prompt" slot="ar-button">
