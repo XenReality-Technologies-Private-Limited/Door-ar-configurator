@@ -15,23 +15,23 @@
     <div class="container">
         <header>
             <h1>Customize Your Door</h1>
-            <p>Enter the dimensions below and see your door in AR!</p>
+            <p>Enter the dimensions below and see your door in 3D and AR!</p>
         </header>
 
         <div class="controls">
             <h2>Enter Dimensions:</h2>
             <div class="input-group">
                 <label for="doorHeightFt">Height:</label>
-                <input type="number" id="doorHeightFt" placeholder="ft" min="0">
+                <input type="number" id="doorHeightFt" placeholder="ft" min="0" value="6">
                 <span>ft</span>
-                <input type="number" id="doorHeightIn" placeholder="in" min="0" max="11">
+                <input type="number" id="doorHeightIn" placeholder="in" min="0" max="11" value="8">
                 <span>in</span>
             </div>
             <div class="input-group">
                 <label for="doorWidthFt">Width:</label>
-                <input type="number" id="doorWidthFt" placeholder="ft" min="0">
+                <input type="number" id="doorWidthFt" placeholder="ft" min="0" value="2">
                 <span>ft</span>
-                <input type="number" id="doorWidthIn" placeholder="in" min="0" max="11">
+                <input type="number" id="doorWidthIn" placeholder="in" min="0" max="11" value="6">
                 <span>in</span>
             </div>
             <button id="submitDimensions" class="submit-button">
@@ -46,8 +46,8 @@
                 </svg>
                 Generate & View in AR
             </button>
-            <p id="loadingMessage" class="loading-message" style="display: none;">Processing your model...</p>
-            <p id="errorMessage" class="error-message" style="display: none;"></p>
+            <p id="loadingMessage" class="loading-message"></p>
+            <p id="errorMessage" class="error-message"></p>
         </div>
 
         <div class="viewer-container">
@@ -56,7 +56,7 @@
                 field-of-view="45deg" camera-target="0m 1.5m 0m" bounds="tight" auto-rotate disable-zoom
                 touch-action="pan-y" alt="Scalable Door Model" shadow-intensity="1" exposure="1"
                 environment-image="neutral"
-                style="width: 100%; height: 500px; border-radius: 12px; background-color: #f0f0f0; display: none;"
+                style="width: 100%; height: 500px; border-radius: 12px; background-color: #f0f0f0;"
                 poster="https://placehold.co/600x400/e2e8f0/94a3b8?text=Your+3D+Door+Will+Appear+Here">
                 <div class="ar-prompt" slot="ar-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

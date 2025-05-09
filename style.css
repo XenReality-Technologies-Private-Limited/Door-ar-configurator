@@ -1,3 +1,5 @@
+/* style.css */
+
 /* General body styling */
 body {
     font-family: 'Inter', sans-serif;
@@ -116,6 +118,14 @@ header p {
     background-color: #1d4ed8; /* Even darker blue */
 }
 
+/* Style for disabled button */
+.submit-button:disabled {
+    background-color: #9ca3af; /* Gray color */
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
 .submit-button svg {
     margin-right: 5px; /* Space between icon and text */
 }
@@ -126,6 +136,13 @@ header p {
     width: 100%;
     height: auto; /* Adjust height based on model-viewer */
 }
+
+/* Initially hide the model-viewer until a model is loaded */
+/* app.js also sets display: block on load */
+model-viewer#doorModelViewer {
+    display: none;
+}
+
 
 /* Custom AR button prompt */
 .ar-prompt {
@@ -153,6 +170,8 @@ header p {
     font-size: 0.9em;
     padding: 10px;
     border-radius: 6px;
+    /* Initially hidden - controlled by app.js */
+    display: none;
 }
 .loading-message {
     color: #166534; /* Tailwind green-700 */
@@ -177,30 +196,50 @@ header p {
         font-size: 0.9em;
     }
 
+    .controls {
+      padding: 15px;
+    }
+
+    .controls h2 {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+    }
+
     .input-group {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
+        margin-bottom: 15px;
     }
     .input-group label {
         margin-bottom: 3px;
+        min-width: auto; /* Let label width be natural on small screens */
     }
-    .input-group div {
+    .input-group .input-fields { /* Added a wrapper div in HTML or adjust structure */
         display: flex;
         gap: 5px;
         align-items: center;
     }
     .input-group input[type="number"] {
-        width: 70px; /* Slightly smaller for mobile */
+        width: 60px; /* Slightly smaller for mobile */
+        padding: 8px 10px;
     }
-    .controls h2 {
-        font-size: 1.2em;
-    }
+     .input-group span {
+         margin-right: 5px;
+         margin-left: 0;
+     }
+
     .submit-button {
         width: 100%;
         justify-content: center;
+        padding: 10px 15px;
+        font-size: 0.95em;
     }
-    #doorModelViewer {
+    .submit-button svg {
+        margin-right: 3px;
+    }
+
+    model-viewer#doorModelViewer {
         height: 350px; /* Adjust viewer height for smaller screens */
     }
 }
